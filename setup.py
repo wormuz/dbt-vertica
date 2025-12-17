@@ -78,7 +78,7 @@ def _get_dbt_core_version():
 
 
 package_name = "dbt-vertica"
-package_version = "1.8.5"
+package_version = "1.10.0"
 
 description = """Official vertica adapter plugin for dbt (data build tool)"""
 dbt_core_version = _get_dbt_core_version()
@@ -114,10 +114,9 @@ setup(
         ]
     },
     install_requires=[
-       'dbt-core==1.8.5',
-        # "dbt-core~={}".format(dbt_core_version),
+        'dbt-core>=1.10.0,<1.11.0',
         'vertica-python>=1.1.0',
-        'dbt-tests-adapter==1.8.0',
+        'dbt-tests-adapter>=1.10.0,<1.11.0',
         'python-dotenv==0.21.1',
         'pytest>=8.3.2',
     ],
