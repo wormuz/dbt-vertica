@@ -117,7 +117,7 @@ setup(
         'dbt-core>=1.10.0,<1.11.0',
         'vertica-python>=1.1.0',
         'dbt-tests-adapter>=1.10.0,<1.11.0',
-        'python-dotenv==0.21.1',
+        'python-dotenv>=0.21.1',
         'pytest>=8.3.2',
     ],
     classifiers=[
