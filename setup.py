@@ -93,7 +93,7 @@ setup(
     author='Vertica (Former authors: Matthew Carter, Andy Regan, Andrew Hedengren)',
     author_email='os_dbt_vertica@microfocus.com',
     url='https://github.com/ajay.abrol2/dbt-vertica/',
-    packages=find_packages(include=["dbt","dbt.*"]),
+    packages=find_namespace_packages(include=["dbt.*"]),
     
     package_data={
         'dbt': [
@@ -115,7 +115,7 @@ setup(
     },
     install_requires=[
         'dbt-core>=1.10.0,<1.11.0',
-        'vertica-python>=1.1.0',
+        'vertica-python @ git+https://github.com/vertica/vertica-python.git@494fe29fc52d68d5c9e89d15d9aacca2b6b9e410',
         'dbt-tests-adapter>=1.10.0,<1.11.0',
         'python-dotenv>=0.21.1',
         'pytest>=8.3.2',
@@ -132,4 +132,9 @@ setup(
         "Operating System :: OS Independent"
     ],
     python_requires=">=3.8.0",
+    entry_points={
+        "dbt.adapters": [
+            "vertica = dbt.adapters.vertica",
+        ],
+    },
 )

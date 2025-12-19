@@ -45,6 +45,7 @@ class verticaCredentials(Credentials):
     withMaterialization: bool = False
     ssl_env_cafile: Optional[str] = None
     ssl_uri: Optional[str] = None
+    tlsmode: Optional[str] = None
     connection_load_balance: Optional[bool]= True
     retries:int  =  1
     backup_server_node: Optional[List[str]] = None
@@ -96,8 +97,11 @@ class verticaConnectionManager(SQLConnectionManager):
                 'oauth_access_token': credentials.oauth_access_token,
                 'autocommit': credentials.autocommit,
                 'backup_server_node':credentials.backup_server_node,
-                
             }
+            
+            # Добавляем tlsmode, если указан
+            if credentials.tlsmode is not None:
+                conn_info['tlsmode'] = credentials.tlsmode
 
             # if credentials.ssl.lower() in {'true', 'yes', 'please'}:
             if credentials.ssl:
