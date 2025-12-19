@@ -68,6 +68,7 @@
       {% endif %}
 
 
+      {%- set update_columns = config.get("merge_update_columns", default=dest_columns | map(attribute="name") | list) -%}
       {% set build_sql = vertica__get_incremental_sql(strategy, target_relation, tmp_relation, unique_key, dest_columns) %}
 
 

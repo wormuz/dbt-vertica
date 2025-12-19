@@ -56,6 +56,17 @@
 
 {% endmacro %}
 
+{% macro get_incremental_update_insert_sql(arg_dict) %}
+
+  {{ return(adapter.dispatch('get_incremental_update_insert_sql', 'dbt')(arg_dict)) }}
+
+{% endmacro %}
+
+{% macro vertica__get_incremental_update_insert_sql(arg_dict) %}
+  {#-- Call the update+insert strategy macro #}
+  {{ return(adapter.dispatch('get_update_insert_sql', 'dbt')(arg_dict["target_relation"], arg_dict["temp_relation"], arg_dict["unique_key"], arg_dict["dest_columns"], arg_dict.get("update_columns", arg_dict["dest_columns"] | map(attribute="name") | list))) }}
+{% endmacro %}
+
 
 
 
