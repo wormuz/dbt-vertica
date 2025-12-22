@@ -244,3 +244,55 @@ class verticaConnectionManager(SQLConnectionManager):
     def data_type_code_to_name(cls, type_code: Union[int, str]) -> str:
         assert isinstance(type_code, int)
         return vertica_python.vertica.connector.constants.FIELD_ID_TO_NAME[type_code]
+
+    def add_commit_query(self):
+        """
+        Override add_commit_query to handle autocommit mode.
+        In autocommit mode, there is no transaction, so COMMIT is not needed.
+        """
+        connection = self.get_thread_connection()
+        credentials = connection.credentials
+
+        # If autocommit is enabled, skip COMMIT
+        if credentials.autocommit:
+            logger.debug(':P Skipping COMMIT query - autocommit is enabled')
+            return None, None
+
+        # Otherwise call the standard logic
+        return super().add_commit_query()
+
+    def commit(self):
+        """
+        Override commit to handle autocommit mode.
+        In autocommit mode, there is no transaction, so commit is not needed.
+        """
+        connection = self.get_thread_connection()
+        credentials = connection.credentials
+
+        # If autocommit is enabled, skip commit
+        if credentials.autocommit:
+            logger.debug(':P Skipping commit - autocommit is enabled')
+            connection.transaction_open = False
+            return connection
+
+        # Otherwise call the standard logic
+        return super().commit()
+
+    def commit_if_has_connection(self):
+        """
+        Override commit_if_has_connection to handle autocommit mode.
+        """
+        connection = self.get_thread_connection()
+        if connection.state == 'closed':
+            return connection
+
+        credentials = connection.credentials
+
+        # If autocommit is enabled, skip commit
+        if credentials.autocommit:
+            logger.debug(':P Skipping commit_if_has_connection - autocommit is enabled')
+            connection.transaction_open = False
+            return connection
+
+        # Otherwise call the standard logic
+        return super().commit_if_has_connection()

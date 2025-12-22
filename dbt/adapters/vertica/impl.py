@@ -121,18 +121,26 @@ class verticaAdapter(SQLAdapter):
             result = None                
             if fetch == "one":
                 result = cursor.fetchone()
-                conn.handle.commit()
+                # Check autocommit before commit
+                if not conn.credentials.autocommit:
+                    conn.handle.commit()
                 return result
             elif fetch == "all":
                 result = cursor.fetchall()
-                conn.handle.commit()
+                # Check autocommit before commit
+                if not conn.credentials.autocommit:
+                    conn.handle.commit()
                 return result
             else:
-                conn.handle.commit()
+                # Check autocommit before commit
+                if not conn.credentials.autocommit:
+                    conn.handle.commit()
                 return
         except BaseException as e:
             if conn.handle and not getattr(conn.handle, "closed", True):
-                conn.handle.rollback()
+                # Rollback is also not needed with autocommit
+                if not conn.credentials.autocommit:
+                    conn.handle.rollback()
             print(sql)
             print(e)
             raise
